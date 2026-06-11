@@ -311,35 +311,64 @@
 
         /* Notifications */
         #notifications-container {
-            position: fixed;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 9999;
-            width: 90%;
-            max-width: 400px;
-        }
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+}
 
-        .notification {
-            background: linear-gradient(135deg, #1fa866, #0b6b43);
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            margin-bottom: 10px;
-            animation: slideDown 0.5s ease forwards;
-        }
+.notification {
+    background: rgba(10,15,25,.95);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 260px;
+    border: 1px solid rgba(255,255,255,.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,.5);
 
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    transform: translateX(-150%);
+    transition: .5s cubic-bezier(.175,.885,.32,1.275);
+}
 
-        .notif-icon { width: 40px; height: 40px; }
-        .notif-text b { display: block; font-size: 14px; }
-        .notif-text span { font-size: 12px; opacity: 0.9; }
+.notification.show{
+    transform: translateX(0);
+}
+
+.notif-icon{
+    width:40px;
+    height:40px;
+    flex-shrink:0;
+}
+
+.notif-icon img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:8px;
+}
+
+.notif-title{
+    color:#00e5f4;
+    font-size:14px;
+    font-weight:800;
+}
+
+.notif-user{
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+}
+
+.notif-desc{
+    color:#fff;
+    font-size:13px;
+}
     </style>
 </head>
 <body>
@@ -547,30 +576,69 @@ z-index:99999;">
         const names = ['Poco X3 Pro', 'Siti Aisyah', 'Agus Rahman', 'RMX 7090', 'User_99', 'Infinix User'];
         const amounts = ['100B | Rp. 600.000', '50B | Rp. 300.000', '35B | Rp. 210.000', '500B | Rp. 3.000.000'];
 
-        function showNotif() {
-            const container = document.getElementById('notifications-container');
-            const name = names[Math.floor(Math.random() * names.length)];
-            const amount = amounts[Math.floor(Math.random() * amounts.length)];
-            
-            const div = document.createElement('div');
-            div.className = 'notification';
-            div.innerHTML = `
-                <img src="img/reg_gold_.png" class="notif-icon">
-                <div class="notif-text">
-                    <b>${name}</b>
-                    <span>Berhasil Bongkar ${amount}</span>
-                </div>
-            `;
-            
-            container.appendChild(div);
-            setTimeout(() => {
-                div.style.opacity = '0';
-                setTimeout(() => div.remove(), 500);
-            }, 4000);
-        }
+const transaksi = [
+    { nominal: "62.000", chip: "1B" },
+    { nominal: "186.000", chip: "3B" },
+    { nominal: "248.000", chip: "4B" },
+    { nominal: "310.000", chip: "5B" },
+    { nominal: "434.000", chip: "7B" },
+    { nominal: "496.000", chip: "8B" },
+    { nominal: "558.000", chip: "9B" },
+    { nominal: "620.000", chip: "10B" },
+    { nominal: "868.000", chip: "14B" },
+    { nominal: "930.000", chip: "15B" },
+    { nominal: "1.240.000", chip: "20B" },
+    { nominal: "3.100.000", chip: "50B" },
+    { nominal: "6.200.000", chip: "100B" },
+    { nominal: "12.400.000", chip: "200B" }
+];
 
-        setInterval(showNotif, 7000);
+const banks = ["Dana","OVO","GoPay","BCA","BRI"];
 
+function showNotif() {
+
+    const trx = transaksi[Math.floor(Math.random() * transaksi.length)];
+    const name = names[Math.floor(Math.random() * names.length)];
+
+    const div = document.createElement("div");
+    div.className = "notification";
+
+    div.innerHTML = `
+        <div class="notif-icon">
+            <img src="img/bosdomino.jpeg">
+        </div>
+
+        <div>
+            <div class="notif-title">
+                BONGKAR SUKSES
+            </div>
+
+            <div class="notif-user">
+                ${name}
+            </div>
+
+            <div class="notif-desc">
+                ${banks[Math.floor(Math.random()*banks.length)]}
+                - Rp ${trx.nominal}
+                - ${trx.chip}
+            </div>
+        </div>
+    `;
+
+    document.getElementById("notifications-container").appendChild(div);
+
+    setTimeout(()=>{
+        div.classList.add("show");
+    },100);
+
+    setTimeout(()=>{
+        div.classList.remove("show");
+
+        setTimeout(()=>{
+            div.remove();
+        },600);
+    },4000);
+}
         // ===== ULASAN =====
 const stars = document.querySelectorAll('.star');
 const ratingInput = document.getElementById('selected-rating');
