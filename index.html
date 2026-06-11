@@ -21,6 +21,55 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* TESTIMONI */
+.testi-container {
+    background: var(--accent-teal);
+    margin: 15px;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.review-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.player-name {
+    color: #23e1fd;
+    font-weight: bold;
+}
+
+.stars {
+    color: #ffcc33;
+    font-size: 12px;
+}
+
+.review-text {
+    color: rgba(255,255,255,.9);
+    font-style: italic;
+    margin: 5px 0;
+}
+
+.time-info {
+    color: #25D366;
+    font-size: 11px;
+}
+
+.star{
+    font-size:28px;
+    color:#666;
+    cursor:pointer;
+    transition:.2s;
+    margin:0 3px;
+}
+
+.star.active{
+    color:#ffcc33;
+    text-shadow:0 0 8px rgba(255,204,51,.8);
+}
 
         body {
             background: var(--primary-bg);
@@ -385,6 +434,69 @@
                     CHAT ADMIN (PROSES CEPAT)
                 </a>
             </div>
+            <div class="testi-container">
+    <span class="section-title">ULASAN PEMBELI</span>
+
+    <div style="background:rgba(255,255,255,.05);padding:15px;border-radius:15px;margin-bottom:20px;">
+        <input type="text" id="rev-name" placeholder="Nama..."
+        style="width:100%;background:rgba(0,0,0,.3);border:1px solid #444;color:#fff;padding:10px;border-radius:8px;margin-bottom:10px;outline:none;">
+
+        <textarea id="rev-text" placeholder="Ulasan..."
+        rows="2"
+        style="width:100%;background:rgba(0,0,0,.3);border:1px solid #444;color:#fff;padding:10px;border-radius:8px;outline:none;"></textarea>
+
+        <div id="star-rating" style="margin-top:10px;text-align:center;">
+            <i class="fas fa-star star" data-rate="1"></i>
+            <i class="fas fa-star star" data-rate="2"></i>
+            <i class="fas fa-star star" data-rate="3"></i>
+            <i class="fas fa-star star" data-rate="4"></i>
+            <i class="fas fa-star star" data-rate="5"></i>
+        </div>
+
+        <div id="rating-text"
+        style="text-align:center;color:#ffcc33;font-weight:700;margin-top:5px;">
+            Sangat Puas ⭐⭐⭐⭐⭐
+        </div>
+
+        <input type="hidden" id="selected-rating" value="5">
+
+        <button onclick="showNotice()"
+        style="width:100%;margin-top:10px;background:#23e1fd;border:none;padding:10px;border-radius:8px;font-weight:800;cursor:pointer;">
+            KIRIM ULASAN
+        </button>
+    </div>
+
+    <div id="review-list"></div>
+</div>
+
+<div id="modalNotice" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.85);
+justify-content:center;
+align-items:center;
+z-index:99999;">
+    <div style="
+    background:#0b5250;
+    padding:25px;
+    border-radius:20px;
+    max-width:300px;
+    text-align:center;">
+        <i class="fas fa-exclamation-circle"
+        style="font-size:50px;color:#ffcc33;"></i>
+
+        <p>Anda hanya bisa berkomentar jika sudah melakukan withdraw koin.</p>
+
+        <button onclick="closeNotice()"
+        style="padding:10px 20px;border:none;border-radius:10px;font-weight:bold;">
+            SAYA MENGERTI
+        </button>
+    </div>
+</div>
         </form>
     </div>
 
@@ -458,6 +570,99 @@
         }
 
         setInterval(showNotif, 7000);
+
+        // ===== ULASAN =====
+const stars = document.querySelectorAll('.star');
+const ratingInput = document.getElementById('selected-rating');
+const ratingText = document.getElementById('rating-text');
+
+const labels = {
+    1:"Sangat Buruk",
+    2:"Kurang Puas",
+    3:"Lumayan",
+    4:"Puas",
+    5:"Sangat Puas"
+};
+
+stars.forEach(star=>{
+    star.addEventListener('click',()=>{
+        const rating = parseInt(star.dataset.rate);
+
+        ratingInput.value = rating;
+
+        stars.forEach(s=>{
+            if(parseInt(s.dataset.rate)<=rating){
+                s.classList.add('active');
+            }else{
+                s.classList.remove('active');
+            }
+        });
+
+        ratingText.innerHTML =
+            labels[rating] + " " + "⭐".repeat(rating);
+    });
+});
+
+stars.forEach(s=>s.classList.add('active'));
+
+const players = [
+"ahmad","player_2448011","player_1140854",
+"kings","RizkyGamer","shadowX","indra_777",
+"sultanboss","dimas","luffy","agam"
+];
+
+const texts = [
+"Adminnya ramah banget!",
+"Selalu amanah bosku.",
+"Gak pake lama langsung cair.",
+"Trusted banget pokoknya.",
+"Baru pertama coba langsung gacor cairnya.",
+"bongkar 100b aman bosku",
+"makasih kak done bongkar 20b",
+"Amanah bongkar 5b gasampe 1 menit cair",
+"done bang bongkar 10b dana lansung cair",
+"Makasih admin amanah dana sudah cair bos",
+"Bongkar 200b aman cair gasampe 2 menit",
+"Bongkar 15b aman bang thanks ya"
+];
+
+function getRandom(arr){
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+const reviewList = document.getElementById('review-list');
+
+for(let i=0;i<5;i++){
+    const div = document.createElement('div');
+    div.className = 'review-card';
+
+    div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;">
+        <span class="player-name">${getRandom(players)}</span>
+        <span class="stars">★★★★★</span>
+    </div>
+    <p class="review-text">"${getRandom(texts)}"</p>
+    <div class="time-info">${Math.floor(Math.random()*50)+1} Menit lalu</div>
+    `;
+
+    reviewList.appendChild(div);
+}
+
+function showNotice(){
+    const n = document.getElementById('rev-name').value;
+    const t = document.getElementById('rev-text').value;
+
+    if(!n || !t){
+        alert("Isi nama dan ulasan!");
+        return;
+    }
+
+    document.getElementById('modalNotice').style.display='flex';
+}
+
+function closeNotice(){
+    document.getElementById('modalNotice').style.display='none';
+}
     </script>
 </body>
 </html>
